@@ -47,6 +47,7 @@ export fn frame() void {
 
     // get the main viewport
     const hostWindowFlags = ig.ImGuiWindowFlags_NoCollapse;
+    ig.igSetNextWindowSize(.{ .x = 600, .y = 600 }, ig.ImGuiCond_Once);
     const dockId = ig.igGetID_Str("DockSpace");
     _ = ig.igBegin("Docking Space", 0, hostWindowFlags);
     _ = ig.igDockSpace(dockId, .{ .x = 0, .y = 0 }, ig.ImGuiDockNodeFlags_None, null);
