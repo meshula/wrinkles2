@@ -26,6 +26,9 @@ export fn init() void {
         .load_action = .CLEAR,
         .clear_value = .{ .r = 0.0, .g = 0.5, .b = 1.0, .a = 1.0 },
     };
+
+    const io = ig.igGetIO();
+    io.*.ConfigFlags |= ig.ImGuiConfigFlags_DockingEnable;
 }
 
 export fn frame() void {
@@ -38,11 +41,30 @@ export fn frame() void {
     });
 
     //=== UI CODE STARTS HERE
+
+    // create a new ImGui window and set it up as the main docking window. This
+    // will create a new docking space and set it as the main docking space.
+
+    // get the main viewport
+    const hostWindowFlags = ig.ImGuiWindowFlags_NoCollapse;
+    const dockId = ig.igGetID_Str("DockSpace");
+    _ = ig.igBegin("Docking Space", 0, hostWindowFlags);
+    _ = ig.igDockSpace(dockId, .{ .x = 0, .y = 0 }, ig.ImGuiDockNodeFlags_None, null);
+    ig.igEnd();
+
     ig.igSetNextWindowPos(.{ .x = 10, .y = 10 }, ig.ImGuiCond_Once, .{ .x = 0, .y = 0 });
     ig.igSetNextWindowSize(.{ .x = 400, .y = 100 }, ig.ImGuiCond_Once);
     _ = ig.igBegin("Hello Dear ImGui!", 0, ig.ImGuiWindowFlags_None);
     _ = ig.igColorEdit3("Background", &state.pass_action.colors[0].clear_value.r, ig.ImGuiColorEditFlags_None);
     ig.igEnd();
+
+    // make a second window to test the dock.
+    ig.igSetNextWindowPos(.{ .x = 10, .y = 120 }, ig.ImGuiCond_Once, .{ .x = 0, .y = 0 });
+    ig.igSetNextWindowSize(.{ .x = 400, .y = 100 }, ig.ImGuiCond_Once);
+    _ = ig.igBegin("Hello Dear ImGui 2!", 0, ig.ImGuiWindowFlags_None);
+    _ = ig.igColorEdit3("Background 2", &state.pass_action.colors[0].clear_value.g, ig.ImGuiColorEditFlags_None);
+    ig.igEnd();
+
     //=== UI CODE ENDS HERE
 
     // call simgui.render() inside a sokol-gfx pass
